@@ -36,7 +36,7 @@ public class SuperBot {
 			System.err.println("It is " + board.turn + "\'s turn");
 			board.print();
 			if(board.turn == mark){
-				Integer[] move = (new SuperSearchTree(board, mark, playerMark, 16)).findSolutionAction();
+				Integer[] move = (new SuperSearchTree(board, mark, playerMark, 23)).findSolutionAction();
 				board.makeMove(mark, move[0], move[1]);
 				System.out.println(move[0]);
 				System.out.println(move[1]);

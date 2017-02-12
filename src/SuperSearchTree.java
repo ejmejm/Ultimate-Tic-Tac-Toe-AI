@@ -27,6 +27,21 @@ public class SuperSearchTree {
 			return null;
 		}
 
+		/*--ALPHA BETA PRUNING--*/
+		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
+		int max = alphabeta(parentStates.get(0), new Integer(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
+		int maxBoardIndex = 0;
+		
+		for(int i = 1; i < parentStates.size(); i++){
+			int newAB = alphabeta(parentStates.get(i), new Integer(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
+			if(newAB > max){
+				max = newAB;
+				maxBoardIndex = i;
+			}
+		}
+		
+		/*--MINIMAX--*/
+		/*
 		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
 		int max = minimax(parentStates.get(0), new Integer(0));
 		int maxBoardIndex = 0;
@@ -38,9 +53,40 @@ public class SuperSearchTree {
 				maxBoardIndex = i;
 			}
 		}
+		*/
 
 		System.err.println("Bot took " + (startTime - System.currentTimeMillis()) + "ms");
 		return parentStates.get(maxBoardIndex).ancestorAction;
+	}
+	
+	//Before alpha-beta pruning it could search to a depth of 16 without taking more than a couple seconds
+	//With alpha-beta pruning it can go to a depth of 22 in the same amount of time
+	private int alphabeta(SuperBoard state, Integer currentDepth, int alpha, int beta){
+		if(state.isTerminalState() || currentDepth >= maxSearchDepth){
+			if(state.getWinner() == goalMark)
+				return 1;
+			else if(state.getWinner() == enemyMark)
+				return -1;
+			else
+				return 0;
+		}
+		if(state.turn == goalMark){
+			ArrayList<SuperBoard> nextStates = state.getActions();
+			for(int i = 1; i < nextStates.size(); i++){
+				alpha = Math.max(alpha, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
+				if(beta <= alpha)
+					return alpha;
+			}
+			return alpha;
+		}else{
+			ArrayList<SuperBoard> nextStates = state.getActions();
+			for(int i = 1; i < nextStates.size(); i++){
+				beta = Math.max(beta, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
+				if(beta <= alpha)
+					return beta;
+			}
+			return beta;
+		}
 	}
 	
 	private int minimax(SuperBoard state, Integer currentDepth){
