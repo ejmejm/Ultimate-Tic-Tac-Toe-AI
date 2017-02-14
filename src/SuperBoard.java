@@ -120,6 +120,20 @@ public class SuperBoard {
 		}
 		return false;
 	}
+	/*
+	public double getHeuristic(char[] chars, char goalMark){
+		int i = tile;
+		markHeuristic(new char[] {spaces[i][0], spaces[i][1], spaces[i][2]})
+		markHeuristic(new char[] {spaces[i][3], spaces[i][4], spaces[i][5]})
+		markHeuristic(new char[] {spaces[i][6], spaces[i][7], spaces[i][8]})
+		markHeuristic(new char[] {spaces[i][0], spaces[i][3], spaces[i][6]})
+		markHeuristic(new char[] {spaces[i][1], spaces[i][4], spaces[i][7]})
+		markHeuristic(new char[] {spaces[i][2], spaces[i][5], spaces[i][8]})
+		markHeuristic(new char[] {spaces[i][0], spaces[i][4], spaces[i][8]})
+		markHeuristic(new char[] {spaces[i][2], spaces[i][4], spaces[i][6]})
+		return '0';
+	}
+	*/
 	
 	private char sameChar(char[] chars){ // returns 0 if they are not the same chars, or the char if they are the same chars
 		char first = chars[0];
@@ -129,6 +143,24 @@ public class SuperBoard {
 			if(chars[i] != first)
 				return '0';
 		return first;
+	}
+	
+	private double markHeuristic(char[] chars, char goalMark){ // returns 0 if they are not the same chars, or the char if they are the same chars
+		int markCount = 0;
+		for(int i = 0; i < chars.length; i++){
+			if(chars[0] != Character.MIN_VALUE)
+				markCount++;
+		}
+		if(markCount == 0)
+			return 0;
+		char mark = Character.MIN_VALUE;
+		for(int i = 0; i < chars.length; i++){
+			if(mark == Character.MIN_VALUE && chars[i] != Character.MIN_VALUE)
+				mark = chars[i];
+			else if(mark != Character.MIN_VALUE && mark != chars[i])
+				return 0;
+		}
+		return mark == goalMark ? markCount/chars.length : -markCount/chars.length;
 	}
 	
 	private SuperBoard changeTurn(){

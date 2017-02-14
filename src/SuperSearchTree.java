@@ -28,20 +28,21 @@ public class SuperSearchTree {
 		}
 
 		/*--ALPHA BETA PRUNING--*/
+		/*
 		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
-		int max = alphabeta(parentStates.get(0), new Integer(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
+		double max = alphabeta(parentStates.get(0), new Integer(0), Double.MIN_VALUE, Double.MAX_VALUE);
 		int maxBoardIndex = 0;
 		
 		for(int i = 1; i < parentStates.size(); i++){
-			int newAB = alphabeta(parentStates.get(i), new Integer(0), Integer.MIN_VALUE, Integer.MAX_VALUE);
+			double newAB = alphabeta(parentStates.get(i), new Integer(0), Double.MIN_VALUE, Double.MAX_VALUE);
 			if(newAB > max){
 				max = newAB;
 				maxBoardIndex = i;
 			}
 		}
+		*/
 		
 		/*--MINIMAX--*/
-		/*
 		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
 		int max = minimax(parentStates.get(0), new Integer(0));
 		int maxBoardIndex = 0;
@@ -53,16 +54,19 @@ public class SuperSearchTree {
 				maxBoardIndex = i;
 			}
 		}
-		*/
 
-		System.err.println("Bot took " + (startTime - System.currentTimeMillis()) + "ms");
+		System.err.println("Bot took " + (System.currentTimeMillis() - startTime) + "ms");
 		return parentStates.get(maxBoardIndex).ancestorAction;
 	}
 	
 	//Before alpha-beta pruning it could search to a depth of 16 without taking more than a couple seconds
 	//With alpha-beta pruning it can go to a depth of 22 in the same amount of time
-	private int alphabeta(SuperBoard state, Integer currentDepth, int alpha, int beta){
+	private double alphabeta(SuperBoard state, Integer currentDepth, double alpha, double beta){
 		if(state.isTerminalState() || currentDepth >= maxSearchDepth){
+			/*--WITH HEURISTIC WIP, NOT YET FUNCTIONAL--*/
+			//return state.getHeuristic();
+			
+			/*--WITHOUT HEURISTIC--*/
 			if(state.getWinner() == goalMark)
 				return 1;
 			else if(state.getWinner() == enemyMark)
