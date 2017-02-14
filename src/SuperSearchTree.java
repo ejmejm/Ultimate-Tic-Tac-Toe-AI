@@ -67,10 +67,6 @@ public class SuperSearchTree {
 	//With alpha-beta pruning it can go to a depth of 22 in the same amount of time
 	private double alphabeta(SuperBoard state, Integer currentDepth, double alpha, double beta){
 		if(state.isTerminalState() || currentDepth >= maxSearchDepth){
-			/*--WITH HEURISTIC WIP, NOT YET FUNCTIONAL--*/
-			//return state.getHeuristic();
-			
-			/*--WITHOUT HEURISTIC--*/
 			if(state.getWinner() == goalMark)
 				return 1;
 			else if(state.getWinner() == enemyMark)
@@ -83,7 +79,6 @@ public class SuperSearchTree {
 			ArrayList<SuperBoard> nextStates = state.getActions();
 			for(int i = 0; i < nextStates.size(); i++){
 				v = Math.max(v, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
-				//System.out.println("Max Value: " + v + " at Depth " + currentDepth);
 				alpha = Math.max(alpha, v);
 				if(beta <= alpha)
 					break;
@@ -94,7 +89,6 @@ public class SuperSearchTree {
 			ArrayList<SuperBoard> nextStates = state.getActions();
 			for(int i = 0; i < nextStates.size(); i++){
 				v = Math.min(v, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
-				//System.out.println("Min Value: " + v + " at Depth " + currentDepth);
 				beta = Math.min(beta, v);
 				if(beta <= alpha)
 					break;
