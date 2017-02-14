@@ -30,6 +30,7 @@ public class SuperSearchTree {
 		/*--ALPHA BETA PRUNING--*/
 		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
 		double max = alphabeta(parentStates.get(0), new Integer(0), Double.MIN_VALUE, Double.MAX_VALUE);
+		System.out.print(max + ",");
 		int maxBoardIndex = 0;
 		
 		for(int i = 1; i < parentStates.size(); i++){
@@ -80,7 +81,7 @@ public class SuperSearchTree {
 		if(state.turn == goalMark){
 			double v = Integer.MIN_VALUE;
 			ArrayList<SuperBoard> nextStates = state.getActions();
-			for(int i = 1; i < nextStates.size(); i++){
+			for(int i = 0; i < nextStates.size(); i++){
 				v = Math.max(v, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
 				//System.out.println("Max Value: " + v + " at Depth " + currentDepth);
 				alpha = Math.max(alpha, v);
@@ -91,7 +92,7 @@ public class SuperSearchTree {
 		}else{
 			double v = Integer.MAX_VALUE;
 			ArrayList<SuperBoard> nextStates = state.getActions();
-			for(int i = 1; i < nextStates.size(); i++){
+			for(int i = 0; i < nextStates.size(); i++){
 				v = Math.min(v, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
 				//System.out.println("Min Value: " + v + " at Depth " + currentDepth);
 				beta = Math.min(beta, v);
