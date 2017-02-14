@@ -28,32 +28,35 @@ public class SuperSearchTree {
 		}
 
 		/*--ALPHA BETA PRUNING--*/
-		/*
 		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
 		double max = alphabeta(parentStates.get(0), new Integer(0), Double.MIN_VALUE, Double.MAX_VALUE);
 		int maxBoardIndex = 0;
 		
 		for(int i = 1; i < parentStates.size(); i++){
 			double newAB = alphabeta(parentStates.get(i), new Integer(0), Double.MIN_VALUE, Double.MAX_VALUE);
+			System.out.print(newAB + ",");
 			if(newAB > max){
 				max = newAB;
 				maxBoardIndex = i;
 			}
 		}
-		*/
 		
 		/*--MINIMAX--*/
+		/*
 		ArrayList<SuperBoard> parentStates = currentState.getAncestorActions(); //All immediate moves
 		int max = minimax(parentStates.get(0), new Integer(0));
 		int maxBoardIndex = 0;
 		
 		for(int i = 1; i < parentStates.size(); i++){
 			int newMinimax = minimax(parentStates.get(i), new Integer(0));
+			System.out.print(newMinimax + " ,");
 			if(newMinimax > max){
 				max = newMinimax;
 				maxBoardIndex = i;
 			}
 		}
+		*/
+		System.out.println();
 
 		System.err.println("Bot took " + (System.currentTimeMillis() - startTime) + "ms");
 		return parentStates.get(maxBoardIndex).ancestorAction;
@@ -72,24 +75,30 @@ public class SuperSearchTree {
 			else if(state.getWinner() == enemyMark)
 				return -1;
 			else
-				return 0;
+				return state.getHeuristic(goalMark);
 		}
 		if(state.turn == goalMark){
+			double v = Integer.MIN_VALUE;
 			ArrayList<SuperBoard> nextStates = state.getActions();
 			for(int i = 1; i < nextStates.size(); i++){
-				alpha = Math.max(alpha, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
+				v = Math.max(v, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
+				//System.out.println("Max Value: " + v + " at Depth " + currentDepth);
+				alpha = Math.max(alpha, v);
 				if(beta <= alpha)
-					return alpha;
+					break;
 			}
-			return alpha;
+			return v;
 		}else{
+			double v = Integer.MAX_VALUE;
 			ArrayList<SuperBoard> nextStates = state.getActions();
 			for(int i = 1; i < nextStates.size(); i++){
-				beta = Math.max(beta, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
+				v = Math.min(v, alphabeta(nextStates.get(i), ++currentDepth, alpha, beta));
+				//System.out.println("Min Value: " + v + " at Depth " + currentDepth);
+				beta = Math.min(beta, v);
 				if(beta <= alpha)
-					return beta;
+					break;
 			}
-			return beta;
+			return v;
 		}
 	}
 	
@@ -101,6 +110,36 @@ public class SuperSearchTree {
 				return -1;
 			else
 				return 0;
+		}
+		if(state.turn == goalMark){
+			ArrayList<SuperBoard> nextStates = state.getActions();
+			int max = minimax(nextStates.get(0), ++currentDepth);
+			for(int i = 1; i < nextStates.size(); i++){
+				int nextMiniMax = minimax(nextStates.get(i), ++currentDepth);
+				if(nextMiniMax > max)
+					max = nextMiniMax;
+			}
+			return max;
+		}else{
+			ArrayList<SuperBoard> nextStates = state.getActions();
+			int min = minimax(nextStates.get(0), ++currentDepth);
+			for(int i = 1; i < nextStates.size(); i++){
+				int nextMiniMax = minimax(nextStates.get(i), ++currentDepth);
+				if(nextMiniMax < min)
+					min = nextMiniMax;
+			}
+			return min;
+		}
+	}
+	
+	private double hMinimax(SuperBoard state, Integer currentDepth){
+		if(state.isTerminalState() || currentDepth >= maxSearchDepth){
+			if(state.getWinner() == goalMark)
+				return 1;
+			else if(state.getWinner() == enemyMark)
+				return -1;
+			else
+				return state.getHeuristic(goalMark);
 		}
 		if(state.turn == goalMark){
 			ArrayList<SuperBoard> nextStates = state.getActions();
